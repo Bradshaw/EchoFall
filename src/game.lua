@@ -3,7 +3,7 @@ local state = gstate.new()
 scale = 24
 
 function makeWorld()
-	l:init(100,1000)
+	l:init(1000,1000)
 	l:islands(false,7)
 	bg = level.from(l)
 	--bg:init(100,1000)
@@ -26,7 +26,7 @@ function state:init()
 	tileim = love.graphics.newImage("tile.png")
 	vig = love.graphics.newImage("images/vignette.png")
 	sw = swirlies.new()
-	l = level.new(1000,200)
+	l = level.new(10,10)
 	bg = level.from(l)
 	d = dude.new(1000,1000,l)
 	xoff = 0

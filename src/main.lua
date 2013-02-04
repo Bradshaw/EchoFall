@@ -52,6 +52,7 @@ function hsv(H, S, V, A, div, max, ang)
 end
 
 function love.load(arg)
+	elapsed = 0
 	gstate = require("gamestate")
 	game = require("game")
 	require("anim")
@@ -96,8 +97,10 @@ end
 
 function love.update(dt)
 	if love.keyboard.isDown("s") then
+		elapsed = elapsed+0.04
 		gstate.update(0.04)
 	else
+		elapsed = elapsed+math.min(dt,0.1)
 		gstate.update(math.min(dt,0.1))
 	end
 end

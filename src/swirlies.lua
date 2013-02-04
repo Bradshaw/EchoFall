@@ -1,13 +1,13 @@
 local swirly_mt = {}
 local swirlies_mt = {}
-
+local off = math.random()*math.pi*2
 swirlies = {}
 
 function swirlies.newSwirl(x, y)
 	local self = setmetatable({},{__index=swirly_mt})
 	self.x = x
 	self.y = y
-	self.life = 2+math.random()*5
+	self.life = math.random()*math.pi*2
 	local a = math.random()*math.pi*2
 	self.dx = 0
 	self.dy = 0
@@ -17,9 +17,11 @@ function swirlies.newSwirl(x, y)
 end
 
 function swirly_mt.update(self, dt)
+	self.dx = math.sin(elapsed/10+off)+(math.sin(self.life)/2)
+	self.dy = 1
 	--self.life = self.life - dt
-	self.x = self.x + (self.dx*self.life)+math.random(-100,100)*dt
-	self.y = self.y + (self.dy*self.life)+math.random(-100,100)*dt
+	self.x = self.x + (self.dx)+math.random(-100,100)*dt
+	self.y = self.y + (self.dy)+math.random(-100,100)*dt
 
 	if self.life <= 0 then
 		--self.purge = true
@@ -53,7 +55,9 @@ function swirlies_mt.update( self, dt )
 		self:add(-xoff+math.random(2,799),-yoff+399)
 		self:add(-xoff+2,-yoff+math.random(1,399))
 		self:add(-xoff+799,-yoff+math.random(1,399))
-		self:add(d.save.x+12,d.save.y+24)
+		if not d.invis then
+			--self:add(d.save.x+12,d.save.y+24)
+		end
 	end
 	while i<=#self.data do
 		v = self.data[i]
