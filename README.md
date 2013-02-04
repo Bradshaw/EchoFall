@@ -9,8 +9,8 @@ By Kevin "Gaeel" Bradshaw-Rodriguez, distributed under WTFPL except:
 Design
 ------
 
-The goal is to implement various experimental concepts in a simple non-intrusive
-way, some of these concepts are:
+The goal is to implement various experimental concepts in a simple
+non-intrusive way, some of these concepts are:
 
 >	Procedurally generated world
 >	A single-player experience but with multiplayer elements
@@ -25,3 +25,13 @@ The first implementation will be in Löve2d, to test the ideas in a familiar
 environment.
 
 Porting to Javascript and Node.js is planned in the near future.
+
+
+Ideas
+-----
+
+>	Players have their own personal world, and they can use a portal to 
+	visit others
+>	In other worlds, collecting items and bringing them to the portal allows
+	the creation of a permanent link between worlds
+>	In own world, collected items can be placed and challenges can be created
