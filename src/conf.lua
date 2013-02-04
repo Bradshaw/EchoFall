@@ -1,7 +1,7 @@
 function love.conf(t)
     t.title = "Work in progress"        -- The title of the window the game is in (string)
     t.author = "Kevin \"Gaeel\" Bradshaw"        -- The author of the game (string)
-    t.identity = nil            -- The name of the save directory (string)
+    t.identity = "echofall"            -- The name of the save directory (string)
     t.version = "0.8.0"               -- The LÖVE version this game was made for (number)
     t.console = false           -- Attach a console (boolean, Windows only)
     t.release = false           -- Enable release mode (boolean)

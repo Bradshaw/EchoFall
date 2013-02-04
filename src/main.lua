@@ -57,6 +57,7 @@ function love.load(arg)
 	require("anim")
 	require("level")
 	require("dude")
+	require("swirlies")
 	gstate.switch(game)
 end
 
@@ -94,7 +95,11 @@ function keyreleased(key, uni)
 end
 
 function love.update(dt)
-	gstate.update(dt)
+	if love.keyboard.isDown("s") then
+		gstate.update(0.04)
+	else
+		gstate.update(math.min(dt,0.1))
+	end
 end
 
 function love.draw()

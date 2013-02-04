@@ -1,9 +1,14 @@
 local anim_mt = {}
+local files = {}
+local quads = {}
 anim = {}
 
 function anim.new(filename, xsize, ysize, framerate)
 	local self = setmetatable({},{__index=anim_mt})
-	self.image = love.graphics.newImage(filename)
+	if not files[filename] then
+		files[filename]=love.graphics.newImage(filename)
+	end
+	self.image = files[filename]
 	self.xsize = xsize
 	self.ysize = ysize
 	self.frames = math.floor(self.image:getWidth()/self.xsize)
@@ -12,13 +17,17 @@ function anim.new(filename, xsize, ysize, framerate)
 	self.currentAnim = 1
 	self.time = 0
 	self.perframe = 1/framerate
-	self.quads = {}
-	for i=0,self.animations-1 do
-		self.quads[i+1] = {}
-		for j=0,self.frames-1 do
-			self.quads[i+1][j+1] = love.graphics.newQuad(j*self.xsize,i*self.ysize,self.xsize,self.ysize,self.image:getWidth(),self.image:getHeight())
+	if not quads[filename] then
+		quads[filename] = {}
+		for i=0,self.animations-1 do
+			quads[filename][i+1] = {}
+			for j=0,self.frames-1 do
+				quads[filename][i+1][j+1] = love.graphics.newQuad(j*self.xsize,i*self.ysize,self.xsize,self.ysize,self.image:getWidth(),self.image:getHeight())
+			end
 		end
 	end
+
+	self.quads = quads[filename]
 
 	return self
 end
