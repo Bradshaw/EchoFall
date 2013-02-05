@@ -1,15 +1,25 @@
 local dude_mt = {}
+
+local dudestates = {
+	onGround=0,
+	inAir=1,
+	jumped=2,
+	onWall=3
+}
+
 dude = {}
 
 function dude.new(x, y, world)
 	self = setmetatable({},{__index=dude_mt})
 	self.anim = anim.new("images/run.png",32,32,20)
+	self.anim:setAnimType(2, "randomise", 6, 20)
 	self.saveanim = anim.new("images/save.png",16,24,10)
 	self.deathsnd = love.audio.newSource("audio/death.ogg")
 	self.stepsnd = {}
 	for i=1,11 do
 		table.insert(self.stepsnd,love.audio.newSource("audio/step_Seq"..string.format("%02d",i)..".ogg"))
 	end
+	self.walling = 0
 	self.step = 1
 	self.saved = false
 	self.steptime = 0
@@ -27,7 +37,12 @@ function dude.new(x, y, world)
 	return self
 end
 
+function dude_mt.keyPressed(key, uni)
+	
+end
+
 function dude_mt.update(self, dt)
+	self.walling = self.walling - dt
 	local lastanim = self.anim.currentFrame
 	self.anim:update(dt)
 	if self.invis then
@@ -37,7 +52,7 @@ function dude_mt.update(self, dt)
 	self.saveanim:update(dt)
 	self.rest = self.rest+dt
 	if self.world:check(self.x, self.y+1)==1 then
-		if math.abs(self.dx)>10 then
+		if math.abs(self.dx)>20 then
 			self.anim.currentAnim = 1
 		else
 			self.anim.currentAnim = 2
@@ -66,7 +81,9 @@ function dude_mt.update(self, dt)
 		self.rest = 0
 		self.dy= -600
 		self.dx = self.dx *2
-		self.jumped = true
+		if self.walling < 0 then
+			self.jumped = true
+		end
 	end
 	if love.keyboard.isDown("left") then
 		self.rest = 0
@@ -83,6 +100,7 @@ function dude_mt.update(self, dt)
 	end
 	self.x = self.x + self.dx*dt
 	if self.world:check(self.x, self.y)==1 then
+		self.walling = 0.1
 		self.jumped = false
 		self.invis = false
 		self.x = self.x - self.dx*dt
@@ -116,7 +134,8 @@ function dude_mt.update(self, dt)
 		self.saved = false
 		self.y = self.y + 2
 	end
-	if self.y>-yoff+450 then
+	if (love.keyboard.isDown("return") and not self.reset) or self.y>-yoff+425 then
+		self.reset = true
 		self.deathsnd:rewind()
 		self.deathsnd:play()
 		self.x = self.save.x
@@ -124,6 +143,9 @@ function dude_mt.update(self, dt)
 		self.dx  = 0
 		self.dy  = 0
 		--self.invis = true
+	end
+	if not love.keyboard.isDown("return") then
+		self.reset = false
 	end
 end
 

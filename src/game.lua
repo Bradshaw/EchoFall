@@ -3,7 +3,7 @@ local state = gstate.new()
 scale = 24
 
 function makeWorld()
-	l:init(1000,1000)
+	l:init(100,100)
 	l:islands(false,7)
 	bg = level.from(l)
 	--bg:init(100,1000)
@@ -82,8 +82,26 @@ function state:keypressed(key, uni)
 	if key=='h' then
 		makeColour()
 	end
-	if key=='f' then
-		fl = not fl
+	if key=='c' then
+		if not fghue then
+			makeColour()
+		end
+		local saveim = love.image.newImageData(1000,1000)
+		local fgr,fgg, fgb = hsv(fghue, fgsat, fgval)
+		local bgr,bgg, bgb = hsv(bghue, bgsat, bgval)
+		local skyr, skyg, skyb = hsv(skyhue, skysat, skyval)
+		for i=1,1000 do
+			for j = 1,1000 do
+				if l:get(i,j)==1 then
+					saveim:setPixel( i-1, j-1, fgr,fgg, fgb, 255)
+				elseif bg:get(i,j)==1 then
+					saveim:setPixel( i-1, j-1, bgr,bgg, bgb, 255)
+				else
+					saveim:setPixel( i-1, j-1, skyr,skyg, skyb, 255)
+				end
+			end
+		end
+		saveim:encode("map"..string.format("%04d",math.random(0,9999))..".png")
 	end
 end
 

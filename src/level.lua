@@ -33,7 +33,7 @@ function level_mt.islands(self, skyland,d)
 		for i=1,self.xsize do
 			self.data[i] = {}
 			for j=1,self.ysize do
-				self.data[i][j]=sel(math.random()<0.005,1,0)
+				self.data[i][j]=sel(math.random()<0.025,1,0)
 			end
 		end
 	end
