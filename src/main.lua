@@ -91,8 +91,8 @@ function love.keypressed(key, uni)
 	gstate.keypressed(key, uni)
 end
 
-function keyreleased(key, uni)
-	gstate.keyreleased(key)
+function love.keyreleased(key, uni)
+	gstate.keyreleased(key, uni)
 end
 
 function love.update(dt)

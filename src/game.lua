@@ -3,9 +3,12 @@ local state = gstate.new()
 scale = 24
 
 function makeWorld()
-	l:init(100,100)
-	l:islands(false,7)
+	l:init(300,300)
+	l:islands(true,14)
+	--l:repair()
 	bg = level.from(l)
+	l:passage(8)
+	--bg = level.from(l)
 	--bg:init(100,1000)
 	--bg:islands(false,7)
 	bg:expand(4)
@@ -13,7 +16,7 @@ function makeWorld()
 	yoff = d.y
 end
 function makeColour()
-	hue  = math.random(40, 160)
+	hue  = math.random(1, 360)
 	sat = math.random()
 	val = math.random()
 	skyhue, skysat, skyval = hue+40, 60*sat, 20+70*val
@@ -28,7 +31,7 @@ function state:init()
 	sw = swirlies.new()
 	l = level.new(10,10)
 	bg = level.from(l)
-	d = dude.new(1000,1000,l)
+	d = dude.new(1000,850,l)
 	xoff = 0
 	yoff = 0
 	makeWorld()
@@ -76,22 +79,22 @@ function state:keypressed(key, uni)
 	if key=='escape' then
 		love.event.push("quit")
 	end
-	if key==' ' then
+	if key=='m' then
 		makeWorld()
 	end
 	if key=='h' then
 		makeColour()
 	end
-	if key=='c' then
+	if key=='p' then
 		if not fghue then
 			makeColour()
 		end
-		local saveim = love.image.newImageData(1000,1000)
+		local saveim = love.image.newImageData(l.xsize,l.ysize)
 		local fgr,fgg, fgb = hsv(fghue, fgsat, fgval)
 		local bgr,bgg, bgb = hsv(bghue, bgsat, bgval)
 		local skyr, skyg, skyb = hsv(skyhue, skysat, skyval)
-		for i=1,1000 do
-			for j = 1,1000 do
+		for i=1,l.xsize do
+			for j = 1,l.ysize do
 				if l:get(i,j)==1 then
 					saveim:setPixel( i-1, j-1, fgr,fgg, fgb, 255)
 				elseif bg:get(i,j)==1 then
@@ -103,11 +106,12 @@ function state:keypressed(key, uni)
 		end
 		saveim:encode("map"..string.format("%04d",math.random(0,9999))..".png")
 	end
+	d:keypressed(key, uni)
 end
 
 
 function state:keyreleased(key, uni)
-	
+	d:keyreleased(key, uni)
 end
 
 
@@ -121,6 +125,7 @@ end
 
 function state:draw()
 	love.graphics.setBackgroundColor(hsv(skyhue,skysat,skyval))
+	love.graphics.clear()
 
 	love.graphics.push()
 
@@ -132,30 +137,34 @@ function state:draw()
 			end
 		end, math.floor(-xoff/scale-1), math.floor(-yoff/scale-2), love.graphics.getWidth()/scale+3, love.graphics.getHeight()/scale+3)
 	d:draw()
-	love.graphics.setColor(hsv(hue, 80*sat, 50*val))
 	l:doFor(function(x, y, t)
 			if t==1 then
+				love.graphics.setColor(hsv(hue, 80*sat, 50*val))
+				love.graphics.draw(tileim, x*scale+12,y*scale+24)
+			elseif t==2 then
+				love.graphics.setColor(hsv(hue, 80*(sat/2), 50*val))
 				love.graphics.draw(tileim, x*scale+12,y*scale+24)
 			end
 		end, math.floor(-xoff/scale-1), math.floor(-yoff/scale-2), love.graphics.getWidth()/scale+3, love.graphics.getHeight()/scale+3)
 	--love.graphics.setColor(hsv(hue+40, 30, 70))
+	love.graphics.setColor(hsv(hue, 80*sat, 50*val))
 	sw:draw()
 	love.graphics.pop()
 	love.graphics.setColor(20,20,20,127)
 	love.graphics.draw(vig,0,0)
 	--love.graphics.setColor(20,20,20)
-	--love.graphics.print("F/s: "..love.timer.getFPS(),10,10)
-	--love.graphics.print("Alti: "..math.floor(-d.y),10,20)
+	love.graphics.print("F/s: "..love.timer.getFPS(),10,10)
+	love.graphics.print("Steps: "..steps,10,20)
 	if love.keyboard.isDown("s") then
 		if not ss then
 			ss = {}
 		end
-		table.insert(ss,love.graphics.newScreenshot())
+		--table.insert(ss,love.graphics.newScreenshot())
 	else
 		if ss then
 			for i,v in ipairs(ss) do
-				print(string.format("%04d",i)..'.png')
-				v:encode(string.format("%04d",i)..'.png')
+				--print(string.format("%04d",i)..'.png')
+				--v:encode(string.format("%04d",i)..'.png')
 			end
 			ss = {}
 		end

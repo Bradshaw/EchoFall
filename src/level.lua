@@ -33,13 +33,63 @@ function level_mt.islands(self, skyland,d)
 		for i=1,self.xsize do
 			self.data[i] = {}
 			for j=1,self.ysize do
-				self.data[i][j]=sel(math.random()<0.025,1,0)
+				self.data[i][j]=sel(math.random()<0.015,1,0)
 			end
 		end
 	end
 	--self:set(10,10,1)
 	local d = d or 3
 	self:expand(d, true)
+end
+
+function level_mt.repair(self)
+	self:doFor(function(x,y,mat)
+			if mat==0 then
+				if	self:get(x,y+1)==1
+				and	self:get(x,y-1)==1
+				and	self:get(x+1,y)==1
+				and	self:get(x-1,y)==1 then
+					self:set(x,y,1)
+				end
+			else
+				if	(self:get(x,y+1)==0
+				and	self:get(x,y-1)==0
+				and	self:get(x+1,y)==1
+				and	self:get(x-1,y)==1) or
+					(self:get(x,y+1)==1
+				and	self:get(x,y-1)==1
+				and	self:get(x+1,y)==0
+				and	self:get(x-1,y)==0) then
+				
+					self:set(x,y,2)
+				end
+			end
+		end)
+end
+
+function level_mt.passage(self, dist)
+	self:doFor(function(x,y,mat)
+			if mat==0 then
+				if	self:get(x+1,y)==1 then
+					local digTo = 0
+					for dx = 1,dist do
+						if	self:get(x+dx,y+1)==0 then
+							break
+						end
+						if self:get(x+dx,y)==0 then
+							digTo = dx
+						end
+					end
+					for i=-5,digTo do
+						self:set(x+i,y-3,0)
+						self:set(x+i,y-2,0)
+						self:set(x+i,y-1,0)
+						self:set(x+i,y,0)
+					end
+				end
+			end
+		end)
+		self:expand(2,true)
 end
 
 function level_mt.expand(self, d,flattop)
