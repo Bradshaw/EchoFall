@@ -33,3 +33,4 @@ Ideas
 +	In other worlds, collecting items and bringing them to the portal allows
 	the creation of a permanent link between worlds
 +	In own world, collected items can be placed and challenges can be created
+
